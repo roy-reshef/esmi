@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 which apt; Result=$?
 
-if [ "${Result}" != "0" ]; then 
+if [[ "${Result}" != "0" ]]; then
   echo "apt bin not found. are you using ubuntu?!?"
   exit 2
 fi
 
 Pip=$( whichipi); Result=$?
-if [ "${Result}" != "0" ]; then 
+if [[ "${Result}" != "0" ]]; then
   echo "installing pip..."
   sudo apt install -y python-pip 
 fi
