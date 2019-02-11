@@ -3,7 +3,7 @@ import sys
 
 import spacy
 
-from esmi.consts import Entities
+from esmi.consts import Entities, ActionStatus
 from esmi.input_providers import Terminal, Provider, Speech
 from esmi.intents import intent_analysis, intent_handlers
 from esmi.user_input import RawUserInput
@@ -60,12 +60,24 @@ def main(model_loc):
 
     print_welcome_message()
 
-    text = input_provider.get("what can I do for you?\n")
-    user_input = parse_user_input(nlp, text)
-    logger.info("parsed user input: {}".format(user_input))
-    intent = intent_analysis.analyze_intent(user_input)
-    logger.info(intent)
-    intent_handlers.handle_intent(intent)
+    msg = "what can I do for you?\n"
+    while True:
+        text = input_provider.get(msg)
+        if text is not None:
+            user_input = parse_user_input(nlp, text)
+            logger.info("parsed user input: {}".format(user_input))
+            intent = intent_analysis.analyze_intent(user_input)
+            logger.info(intent)
+            res = intent_handlers.handle_intent(intent)
+            if res.status == ActionStatus.OK:
+                print("I happy to inform you that your wish came true")
+                msg = "what can I do for you?\n"
+            else:
+                print(
+                    "I'm sorry to inform you that I had difficulty performing "
+                    "operation:{} ".format(res.message))
+        else:
+            msg = "please try again\n"
 
 
 if __name__ == '__main__':

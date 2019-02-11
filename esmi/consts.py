@@ -12,3 +12,8 @@ class Entities(Enum):
     DATE = "DATE"
     LOCATION = "LOCATION"
     PURPOSE = "PURPOSE"
+
+
+class ActionStatus(Enum):
+    OK = 1,
+    ERROR = 2
