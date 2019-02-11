@@ -28,11 +28,11 @@ Speech recognition is using Google API. For other speech recognition endpoints s
 * manage context and manage session with user
 * event time duration
 * more training data
+* add data validation
 * implement event deletion and update
 * better date recognition
 * additional event entities (attendees, reminders)
-* enable speech recognition
-* text to speech
+* fix google modules issues
 
 # Technical References
 

@@ -1,4 +1,5 @@
 TRAIN_DATA = [
+    # ("exit", {"entities": [(0, 4, "ACTION")]}),
     ("create a meeting on 12.2.2019 9:00AM for fuseday at tikal",
      {"entities": [(0, 6, "ACTION"),
                    (20, 36, "DATE"),
