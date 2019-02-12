@@ -1,4 +1,6 @@
+import datetime
 import logging
+import dateparser
 
 from word2number import w2n
 
@@ -20,7 +22,7 @@ class IntentHandler(object):
         self.intent = intent
 
     def get_val(self, entity):
-        return self.intent.entities[entity.value]
+        return self.intent.entities.get(entity.value)
 
     def execute(self) -> ActionResponse:
         raise Exception("IntentHandler Subclasses should implement execute")
@@ -36,8 +38,11 @@ class CreateEventIntentHandler(IntentHandler):
         # TODO: add validation
         date_str = self.get_val(Entities.DATE)
         date = None
-        if date_str is not None:
-            date = utils.parse_date(date_str)
+        if date_str:
+            if isinstance(date_str, datetime.datetime):
+                date = date_str
+            if isinstance(date_str, str):
+                date = dateparser.parse(date_str)
 
         calendar_client.create_event(date,
                                      self.intent.entities[
