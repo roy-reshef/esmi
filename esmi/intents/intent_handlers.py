@@ -79,7 +79,6 @@ def handle_intent(intent: Intent) -> ActionResponse:
         handler = ShowEventIntentHandler(intent)
 
     if handler is None:
-        import pdb;pdb.set_trace()
         logger.error("no intent handler was found for action:{}".format(
             intent.action.name))
         return ActionResponse(ActionStatus.ERROR,
