@@ -1,7 +1,9 @@
+import datetime
 import logging
 import sys
 
 import spacy
+import json
 
 from esmi.consts import Entities, ActionStatus
 from esmi.input_providers import Terminal, Provider, Speech
@@ -11,7 +13,13 @@ from esmi.user_input import RawUserInput
 logger = logging.getLogger()
 
 
+def default_serializer(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
+
+
 def parse_user_input(nlp, user_input: str) -> RawUserInput:
+    print('Input: {}'.format(user_input))
     doc = nlp(user_input)
 
     entities = {}
@@ -29,6 +37,8 @@ def parse_user_input(nlp, user_input: str) -> RawUserInput:
             entities[Entities.LOCATION.value] = ent.text
         elif ent.label_ == Entities.PURPOSE.value:
             entities[Entities.PURPOSE.value] = ent.text
+        elif ent.label_ == Entities.NUM_TO_SHOW.value:
+            entities[Entities.NUM_TO_SHOW.value] = ent.text
         else:
             logger.warning(
                 "unexpected label {} for value {}".format(ent.label_, ent.text))
@@ -38,7 +48,7 @@ def parse_user_input(nlp, user_input: str) -> RawUserInput:
 
 def get_input_provider() -> Provider:
     input_method = input(
-        "would you like to use speech base input(y/<eny-key>\n")
+        "would you like to use speech base input(y/<any-key>)\n")
 
     if input_method == 'y':
         input_provider = Speech()
@@ -67,7 +77,7 @@ def main(model_loc):
         text = input_provider.get(msg)
         if text is not None:
             user_input = parse_user_input(nlp, text)
-            logger.info("parsed user input: {}".format(user_input))
+            logger.info("parsed user input: {}".format(json.dumps(user_input, default=default_serializer)))
             intent = intent_analysis.analyze_intent(user_input)
             logger.info(intent)
             res = intent_handlers.handle_intent(intent, ctx)

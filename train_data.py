@@ -8,9 +8,13 @@ TRAIN_DATA = [
     ("delete a meeting on 30.3.2019 10:00PM",
      {"entities": [(0, 6, "ACTION"),
                    (20, 37, "DATE")]}),
-    ("set an appointment for miri review on 12.2.2019 11:00AM at the office",
+    ("set an appointment for esmi review on 12.2.2019 11:00AM at the office",
      {"entities": [(0, 3, "ACTION"),
                    (23, 34, "PURPOSE"),
                    (38, 55, "DATE"),
-                   (59, 69, "LOCATION")]})]
+                   (59, 69, "LOCATION")]}),
+    ("show 8 events",
+     {"entities": [(0, 4, "ACTION"),
+                   (5, 6, "NUM_TO_SHOW")]}),
+]
 

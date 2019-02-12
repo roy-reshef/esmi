@@ -1,7 +1,10 @@
+import datetime
 import logging
 from typing import Iterable
 
-from esmi import calendar_client, consts, utils
+import dateparser
+
+from esmi import calendar_client, consts
 from esmi.consts import Entities, ActionStatus
 from esmi.intents.intents import Intent
 
@@ -20,7 +23,7 @@ class IntentHandler(object):
         self.ctx = ctx
 
     def get_val(self, entity):
-        return self.intent.entities[entity.value]
+        return self.intent.entities.get(entity.value)
 
     def execute(self) -> ActionResponse:
         raise Exception("IntentHandler Subclasses should implement execute")
@@ -49,11 +52,13 @@ class CreateEventIntentHandler(IntentHandler):
         logger.info("handling event creation")
 
         self.validate()
-        print(self.intent)
         date_str = self.get_val(Entities.DATE)
         date = None
-        if date_str is not None:
-            date = utils.parse_date(date_str)
+        if date_str:
+            if isinstance(date_str, datetime.datetime):
+                date = date_str
+            if isinstance(date_str, str):
+                date = dateparser.parse(date_str)
 
         calendar_client.create_event(date,
                                      self.intent.entities[
@@ -65,6 +70,23 @@ class CreateEventIntentHandler(IntentHandler):
 
     def required_entities(self) -> Iterable:
         return [Entities.LOCATION, Entities.DATE, Entities.PURPOSE]
+
+
+class ShowEventIntentHandler(IntentHandler):
+    def __init__(self, intent: Intent, ctx):
+        IntentHandler.__init__(self, intent, ctx)
+
+    def execute(self) -> ActionResponse:
+        logger.info("handling events display")
+
+        self.validate()
+        num_of_events = self.get_val(Entities.NUM_TO_SHOW)
+        if num_of_events and num_of_events.isnumeric():
+            calendar_client.get_next_events(num_of_events)
+        return ActionResponse(ActionStatus.OK)
+
+    def required_entities(self) -> Iterable:
+        return [Entities.NUM_TO_SHOW]
 
 
 class ExitIntentHandler(IntentHandler):
@@ -82,6 +104,8 @@ def handle_intent(intent: Intent, ctx) -> ActionResponse:
         handler = CreateEventIntentHandler(intent, ctx)
     elif intent.action is consts.ActionType.EXIT:
         handler = ExitIntentHandler(intent, ctx)
+    elif intent.action is consts.ActionType.SHOW:
+        handler = ShowEventIntentHandler(intent, ctx)
 
     if handler is None:
         logger.error("no intent handler was found for action:{}".format(

@@ -18,6 +18,9 @@ def _parse_action(action: str) -> ActionType:
         return ActionType.DELATE
     elif action == 'exit':
         return ActionType.EXIT
+    elif action == 'show' or \
+            action == 'display':
+        return ActionType.SHOW
     else:
         return None
 

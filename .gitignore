@@ -125,3 +125,5 @@ npm-debug.log
 client-secrets.txt
 credentials.json
 token.pickle
+
+.idea/
