@@ -34,7 +34,9 @@ def parse_date(date: str) -> datetime.datetime:
     try:
         date: datetime = datetime.datetime.strptime(date, DATE_FORMAT)
     except ValueError:
+        logger.debug("date could not be parsed. using date parser")
         date: datetime = dateparser.parse(date)
+
     logger.debug("parsed date:{}".format(date))
     return date
 
