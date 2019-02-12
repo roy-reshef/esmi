@@ -4,6 +4,9 @@ from typing import Iterable
 
 import dateparser
 
+from word2number import w2n
+
+from esmi import calendar_client, consts, utils
 from esmi import calendar_client, consts
 from esmi.consts import Entities, ActionStatus
 from esmi.intents.intents import Intent
@@ -81,8 +84,13 @@ class ShowEventIntentHandler(IntentHandler):
 
         self.validate()
         num_of_events = self.get_val(Entities.NUM_TO_SHOW)
-        if num_of_events and num_of_events.isnumeric():
-            calendar_client.get_next_events(num_of_events)
+        if num_of_events:
+            try:
+                events_count = w2n.word_to_num(num_of_events)
+                calendar_client.get_next_events(events_count)
+            except ValueError:
+                if num_of_events.isnumeric():
+                    calendar_client.get_next_events(num_of_events)
         return ActionResponse(ActionStatus.OK)
 
     def required_entities(self) -> Iterable:

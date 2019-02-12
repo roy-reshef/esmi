@@ -18,9 +18,13 @@
     "LOCATION",
     "LOCATION",
     "LOCATION",
-    "LOCATION"
+    "LOCATION",
+    "NUM_TO_SHOW",
+    "NUM_TO_SHOW",
+    "NUM_TO_SHOW",
+    "NUM_TO_SHOW"
   ],
-  "nr_class":17,
+  "nr_class":21,
   "hidden_depth":1,
   "token_vector_width":128,
   "hidden_width":200,
