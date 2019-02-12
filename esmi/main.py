@@ -114,6 +114,3 @@ def main(model_loc):
 
 if __name__ == '__main__':
     main(sys.argv[1])
-    # calendar_client.create_event(
-    #     datetime.datetime.today() + datetime.timedelta(hours=1), "test")
-    # calendar_client.get_next_events(10)

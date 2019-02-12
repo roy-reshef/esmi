@@ -45,33 +45,6 @@ class IntentHandler(object):
                 self.intent.entities[entity.value] = val
 
 
-# class CreateEventIntentHandler(IntentHandler):
-#     def __init__(self, intent: Intent, ctx):
-#         IntentHandler.__init__(self, intent, ctx)
-#
-#     def execute(self) -> ActionResponse:
-#         logger.info("handling event creation")
-#
-#         # self.validate()
-#         date_str = self.get_val(Entities.DATE)
-#         date = None
-#         if date_str:
-#             if isinstance(date_str, datetime.datetime):
-#                 date = date_str
-#             if isinstance(date_str, str):
-#                 date = dateparser.parse(date_str)
-#
-#         calendar_client.create_event(date,
-#                                      self.intent.entities[
-#                                          Entities.LOCATION.value],
-#                                      self.intent.entities[
-#                                          Entities.PURPOSE.value])
-#
-#         return ActionResponse(ActionStatus.OK)
-#
-#     def required_entities(self) -> Iterable:
-#         return [Entities.LOCATION, Entities.DATE, Entities.PURPOSE]
-
 class CreateEventIntentHandler(IntentHandler):
     def __init__(self, intent: Intent, ctx):
         IntentHandler.__init__(self, intent, ctx)
@@ -87,8 +60,10 @@ class CreateEventIntentHandler(IntentHandler):
 
         try:
             calendar_client.create_event(date,
-                                         self.intent.entities.get(Entities.LOCATION.value),
-                                         self.intent.entities.get(Entities.PURPOSE.value)
+                                         self.intent.entities.get(
+                                             Entities.LOCATION.value),
+                                         self.intent.entities.get(
+                                             Entities.PURPOSE.value)
                                          )
             return ActionResponse(ActionStatus.OK)
         except:
