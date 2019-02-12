@@ -3,7 +3,7 @@ from enum import Enum
 
 class ActionType(Enum):
     CREATE = 1
-    DELATE = 2
+    DELETE = 2
     EXIT = 3
     SHOW = 4
 

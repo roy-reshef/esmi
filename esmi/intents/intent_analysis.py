@@ -8,18 +8,13 @@ logger = logging.getLogger()
 
 
 def _parse_action(action: str) -> ActionType:
-    if action == 'set' or \
-            action == 'create' or \
-            action == 'new':
+    if action in {'set', 'create', 'new'}:
         return ActionType.CREATE
-    elif action == 'delete' or \
-            action == 'remove' or \
-            action == 'unset':
-        return ActionType.DELATE
-    elif action == 'exit':
+    elif action in {'delete', 'remove', 'unset'}:
+        return ActionType.DELETE
+    elif action in {'exit', 'quit'}:
         return ActionType.EXIT
-    elif action == 'show' or \
-            action == 'display':
+    elif action in {'show', 'display'}:
         return ActionType.SHOW
     else:
         return None
