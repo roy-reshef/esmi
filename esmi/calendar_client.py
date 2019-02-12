@@ -68,7 +68,6 @@ def create_event(starttime: datetime, location: str, purpose: str):
     date_format = '%Y-%m-%dT%H:%M:%S'
     event = {
         'summary': purpose,
-        'location': location,
         'description': purpose,
         'start': {
             'dateTime': starttime.strftime(date_format),
@@ -93,6 +92,8 @@ def create_event(starttime: datetime, location: str, purpose: str):
             # ],
         },
     }
+    if location:
+        event['location'] = location
 
     event = _get_service().events().insert(calendarId='primary',
                                            body=event).execute()

@@ -84,13 +84,14 @@ class CreateEventIntentHandler(IntentHandler):
         if date_str is not None:
             date = utils.parse_date(date_str)
 
-        calendar_client.create_event(date,
-                                     self.intent.entities[
-                                         Entities.LOCATION.value],
-                                     self.intent.entities[
-                                         Entities.PURPOSE.value])
-
-        return ActionResponse(ActionStatus.OK)
+        try:
+            calendar_client.create_event(date,
+                                         self.intent.entities.get(Entities.LOCATION.value),
+                                         self.intent.entities.get(Entities.PURPOSE.value)
+                                         )
+            return ActionResponse(ActionStatus.OK)
+        except:
+            return ActionResponse(ActionStatus.ERROR)
 
     def required_entities(self) -> Iterable:
         return [Entities.LOCATION, Entities.DATE, Entities.PURPOSE]
