@@ -22,4 +22,6 @@ def _parse_action(action: str) -> ActionType:
 
 def analyze_intent(user_input: RawUserInput) -> UserInputIntent:
     action = _parse_action(user_input.entities[Entities.ACTION.value])
-    return UserInputIntent(action, user_input.entities)
+    if action:
+        return UserInputIntent(action, user_input.entities)
+    return None

@@ -77,15 +77,18 @@ def main(model_loc):
             user_input = parse_user_input(nlp, text)
             logger.info("parsed user input: {}".format(json.dumps(user_input, default=default_serializer)))
             intent = intent_analysis.analyze_intent(user_input)
-            logger.info(intent)
-            res = intent_handlers.handle_intent(intent)
-            if res.status == ActionStatus.OK:
-                print("I happy to inform you that your wish came true")
-                msg = "what can I do for you?\n"
+            if intent:
+                logger.info(intent)
+                res = intent_handlers.handle_intent(intent)
+                if res.status == ActionStatus.OK:
+                    print("I happy to inform you that your wish came true")
+                    msg = "what can I do for you?\n"
+                else:
+                    print(
+                        "I'm sorry to inform you that I had difficulty performing "
+                        "operation:{} ".format(res.message))
             else:
-                print(
-                    "I'm sorry to inform you that I had difficulty performing "
-                    "operation:{} ".format(res.message))
+                msg = "please try again\n"
         else:
             msg = "please try again\n"
 
