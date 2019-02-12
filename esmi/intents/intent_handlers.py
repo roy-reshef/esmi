@@ -1,10 +1,10 @@
-import datetime
 import logging
-import dateparser
+from typing import Iterable
 
 from word2number import w2n
 
-from esmi import calendar_client, consts, utils
+from esmi import calendar_client, consts
+from esmi import utils
 from esmi.consts import Entities, ActionStatus
 from esmi.intents.intents import Intent
 
@@ -18,8 +18,9 @@ class ActionResponse(object):
 
 
 class IntentHandler(object):
-    def __init__(self, intent: Intent):
+    def __init__(self, intent: Intent, ctx):
         self.intent = intent
+        self.ctx = ctx
 
     def get_val(self, entity):
         return self.intent.entities.get(entity.value)
@@ -27,40 +28,83 @@ class IntentHandler(object):
     def execute(self) -> ActionResponse:
         raise Exception("IntentHandler Subclasses should implement execute")
 
+    def required_entities(self) -> Iterable:
+        raise Exception(
+            "IntentHandler Subclasses should implement required_fields")
+
+    def validate(self):
+        for entity in self.required_entities():
+            logger.debug("validating required entity:{}".format(entity))
+            if entity.value not in self.intent.entities:
+                logger.info("required entity:{} not found".format(entity))
+                val = self.ctx['input_provider'].get(
+                    "please provide value for {}\n".format(entity))
+
+                logger.debug("provided val:{}".format(val))
+                self.intent.entities[entity.value] = val
+
+
+# class CreateEventIntentHandler(IntentHandler):
+#     def __init__(self, intent: Intent, ctx):
+#         IntentHandler.__init__(self, intent, ctx)
+#
+#     def execute(self) -> ActionResponse:
+#         logger.info("handling event creation")
+#
+#         # self.validate()
+#         date_str = self.get_val(Entities.DATE)
+#         date = None
+#         if date_str:
+#             if isinstance(date_str, datetime.datetime):
+#                 date = date_str
+#             if isinstance(date_str, str):
+#                 date = dateparser.parse(date_str)
+#
+#         calendar_client.create_event(date,
+#                                      self.intent.entities[
+#                                          Entities.LOCATION.value],
+#                                      self.intent.entities[
+#                                          Entities.PURPOSE.value])
+#
+#         return ActionResponse(ActionStatus.OK)
+#
+#     def required_entities(self) -> Iterable:
+#         return [Entities.LOCATION, Entities.DATE, Entities.PURPOSE]
 
 class CreateEventIntentHandler(IntentHandler):
-    def __init__(self, intent: Intent):
-        IntentHandler.__init__(self, intent)
+    def __init__(self, intent: Intent, ctx):
+        IntentHandler.__init__(self, intent, ctx)
 
     def execute(self) -> ActionResponse:
         logger.info("handling event creation")
 
-        # TODO: add validation
+        self.validate()
         date_str = self.get_val(Entities.DATE)
         date = None
-        if date_str:
-            if isinstance(date_str, datetime.datetime):
-                date = date_str
-            if isinstance(date_str, str):
-                date = dateparser.parse(date_str)
+        if date_str is not None:
+            date = utils.parse_date(date_str)
 
-        calendar_client.create_event(date,
-                                     self.intent.entities[
-                                         Entities.LOCATION.value],
-                                     self.intent.entities[
-                                         Entities.PURPOSE.value])
+        try:
+            calendar_client.create_event(date,
+                                         self.intent.entities.get(Entities.LOCATION.value),
+                                         self.intent.entities.get(Entities.PURPOSE.value)
+                                         )
+            return ActionResponse(ActionStatus.OK)
+        except:
+            return ActionResponse(ActionStatus.ERROR)
 
-        return ActionResponse(ActionStatus.OK)
+    def required_entities(self) -> Iterable:
+        return [Entities.LOCATION, Entities.DATE, Entities.PURPOSE]
 
 
 class ShowEventIntentHandler(IntentHandler):
-    def __init__(self, intent: Intent):
-        IntentHandler.__init__(self, intent)
+    def __init__(self, intent: Intent, ctx):
+        IntentHandler.__init__(self, intent, ctx)
 
     def execute(self) -> ActionResponse:
         logger.info("handling events display")
 
-        # TODO: add validation
+        self.validate()
         num_of_events = self.get_val(Entities.NUM_TO_SHOW)
         if num_of_events:
             try:
@@ -73,24 +117,27 @@ class ShowEventIntentHandler(IntentHandler):
                     calendar_client.get_next_events(num_of_events)
         return ActionResponse(ActionStatus.OK)
 
+    def required_entities(self) -> Iterable:
+        return [Entities.NUM_TO_SHOW]
+
 
 class ExitIntentHandler(IntentHandler):
-    def __init__(self, intent: Intent):
-        IntentHandler.__init__(self, intent)
+    def __init__(self, intent: Intent, ctx):
+        IntentHandler.__init__(self, intent, ctx)
 
     def execute(self):
         print("Bye for now")
         exit(0)
 
 
-def handle_intent(intent: Intent) -> ActionResponse:
+def handle_intent(intent: Intent, ctx) -> ActionResponse:
     handler = None
     if intent.action is consts.ActionType.CREATE:
-        handler = CreateEventIntentHandler(intent)
+        handler = CreateEventIntentHandler(intent, ctx)
     elif intent.action is consts.ActionType.EXIT:
-        handler = ExitIntentHandler(intent)
+        handler = ExitIntentHandler(intent, ctx)
     elif intent.action is consts.ActionType.SHOW:
-        handler = ShowEventIntentHandler(intent)
+        handler = ShowEventIntentHandler(intent, ctx)
 
     if handler is None:
         logger.error("no intent handler was found for action:{}".format(

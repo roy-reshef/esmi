@@ -8,7 +8,7 @@ logger = logging.getLogger()
 
 
 def _parse_action(action: str) -> ActionType:
-    if action in {'set', 'create', 'new'}:
+    if action in {'set', 'create', 'new', 'book'}:
         return ActionType.CREATE
     elif action in {'delete', 'remove', 'unset'}:
         return ActionType.DELETE

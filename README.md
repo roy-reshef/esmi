@@ -15,7 +15,7 @@ run create_model.sh <path_to_model_output_dir>
 training data can be found in _train_data.py_ file
 
 # Runninng
-execute miri.py <path_to_generated model>
+execute main.py <path_to_generated model> under esmi
 
 **env variables**
 * GOOGLE_CREDS - path to google credentials file

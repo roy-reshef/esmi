@@ -1,9 +1,9 @@
 import datetime
+import json
 import logging
 import sys
 
 import spacy
-import json
 
 from esmi.consts import Entities, ActionStatus
 from esmi.input_providers import Terminal, Provider, Speech
@@ -71,27 +71,29 @@ def main(model_loc):
 
     print_welcome_message()
 
-    msg = "what can I do for you?\n"
+    msg = "what can I do for you?"
+    ctx = {"input_provider": Terminal()}
+
     while True:
-        text = input_provider.get(msg)
-        if text is not None:
-            user_input = parse_user_input(nlp, text)
-            logger.info("parsed user input: {}".format(json.dumps(user_input, default=default_serializer)))
-            intent = intent_analysis.analyze_intent(user_input)
-            if intent:
-                logger.info(intent)
-                res = intent_handlers.handle_intent(intent)
-                if res.status == ActionStatus.OK:
-                    print("I happy to inform you that your wish came true")
-                    msg = "what can I do for you?\n"
-                else:
-                    print(
-                        "I'm sorry to inform you that I had difficulty performing "
-                        "operation:{} ".format(res.message))
-            else:
-                msg = "please try again\n"
+        text = input_provider.get(msg+'\n')
+        if not text:
+            msg = "please try again"
+            continue
+        user_input = parse_user_input(nlp, text)
+        logger.info("parsed user input: {}".format(
+            json.dumps(user_input, default=default_serializer)))
+        intent = intent_analysis.analyze_intent(user_input)
+        if not intent:
+            msg = "please try again"
+            continue
+        logger.info(intent)
+        res = intent_handlers.handle_intent(intent, ctx)
+        if res.status == ActionStatus.OK:
+            print("I happy to inform you that your wish came true")
+            msg = "what can I do for you?"
         else:
-            msg = "please try again\n"
+            print("I'm sorry to inform you that I had difficulty performing "
+                  "operation:{} ".format(res.message))
 
 
 if __name__ == '__main__':
