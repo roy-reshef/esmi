@@ -61,6 +61,8 @@ def main(model_loc):
     print_welcome_message()
 
     msg = "what can I do for you?\n"
+    ctx = {"input_provider": Terminal()}
+
     while True:
         text = input_provider.get(msg)
         if text is not None:
@@ -68,7 +70,7 @@ def main(model_loc):
             logger.info("parsed user input: {}".format(user_input))
             intent = intent_analysis.analyze_intent(user_input)
             logger.info(intent)
-            res = intent_handlers.handle_intent(intent)
+            res = intent_handlers.handle_intent(intent, ctx)
             if res.status == ActionStatus.OK:
                 print("I happy to inform you that your wish came true")
                 msg = "what can I do for you?\n"
