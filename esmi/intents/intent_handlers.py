@@ -86,20 +86,14 @@ class CreateEventIntentHandler(IntentHandler):
         if date_str is not None:
             date = utils.parse_date(date_str)
 
-        attendeesList = []
-        if Entities.ATTENDEES in self.intent.entities:
-            tempAttendees = self.intent.entities[Entities.ATTENDEES.value]
-            if tempAttendees:
-                tempList = list(tempAttendees.split())
-                for attendee in tempList:
-                    if validate_email(attendee):
-                        attendeesList.append(attendee)
+        temp_attendees = self.intent.entities.get(Entities.ATTENDEES.value, '')
+        attendess_list = [attendee for attendee in list(temp_attendees.split()) if validate_email(attendee)]
 
         try:
             calendar_client.create_event(date,
                                          self.intent.entities.get(Entities.LOCATION.value),
                                          self.intent.entities.get(Entities.PURPOSE.value),
-                                         attendeesList)
+                                         attendess_list)
             return ActionResponse(ActionStatus.OK)
         except:
             return ActionResponse(ActionStatus.ERROR)
