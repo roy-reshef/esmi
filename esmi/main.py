@@ -20,7 +20,7 @@ def default_serializer(o):
 
 def parse_user_input(nlp, user_input: str) -> RawUserInput:
     user_input = user_input.lower()
-    logger.debug("user input %s", user_input)
+    logger.debug("User input %s", user_input)
     doc = nlp(user_input)
 
     entities = {}
@@ -42,14 +42,14 @@ def parse_user_input(nlp, user_input: str) -> RawUserInput:
             entities[Entities.NUM_TO_SHOW.value] = ent.text
         else:
             logger.warning(
-                "unexpected label {} for value {}".format(ent.label_, ent.text))
+                "Unexpected label {} for value {}".format(ent.label_, ent.text))
 
     return RawUserInput(entities)
 
 
 def get_input_provider() -> Provider:
     input_method = input(
-        "would you like to use speech base input(y/<any-key>)\n")
+        "Would you like to use speech base input(y/<any-key>)\n")
 
     if input_method == 'y':
         input_provider = Speech()
@@ -60,38 +60,53 @@ def get_input_provider() -> Provider:
 
 
 def print_welcome_message():
+    print('      /\__\         /\__\         /\  \                  ')
+    print('     /:/ _/_       /:/ _/_       |::\  \       ___       ')
+    print('    /:/ /\__\     /:/ /\  \      |:|:\  \     /\__\      ')
+    print('   /:/ /:/ _/_   /:/ /::\  \   __|:|\:\  \   /:/__/      ')
+    print('  /:/_/:/ /\__\ /:/_/:/\:\__\ /::::|_\:\__\ /::\  \      ')
+    print('  \:\/:/ /:/  / \:\/:/ /:/  / \:\~~\  \/__/ \/\:\  \__   ')
+    print('   \::/_/:/  /   \::/ /:/  /   \:\  \        ~~\:\/\__\  ')
+    print('    \:\/:/  /     \/_/:/  /     \:\  \          \::/  /  ')
+    print('     \::/  /        /:/  /       \:\__\         /:/  /   ')
+    print('      \/__/         \/__/         \/__/         \/__/    ')
+    print('')
     print("Welcome to 'esmi' - Event Scheduling Management Interface")
     print("possible input examples:")
     print("create a meeting on 12.2.2019 9:00AM for fuseday at tikal")
     print("show \ display one \ upcoming events")
+    print('')
 
 
 def main(model_loc):
     nlp = spacy.load(model_loc)
-    input_provider = get_input_provider()
 
     print_welcome_message()
 
-    msg = "what can I do for you?"
+    input_provider = get_input_provider()
+
+    print('You are in {} mode'.format(input_provider.whoami()))
+
+    msg = "What can I do for you?"
     ctx = {"input_provider": Terminal()}
 
     while True:
-        text = input_provider.get(msg+'\n')
+        text = input_provider.get(msg + '\n')
         if not text:
-            msg = "please try again"
+            msg = "Please try again"
             continue
         user_input = parse_user_input(nlp, text)
         logger.info("parsed user input: {}".format(
             json.dumps(user_input, default=default_serializer)))
         intent = intent_analysis.analyze_intent(user_input)
         if not intent:
-            msg = "please try again"
+            msg = "Please try again"
             continue
         logger.info(intent)
         res = intent_handlers.handle_intent(intent, ctx)
         if res.status == ActionStatus.OK:
             print("I happy to inform you that your wish came true")
-            msg = "what can I do for you?"
+            msg = "What can I do for you?"
         else:
             print("I'm sorry to inform you that I had difficulty performing "
                   "operation:{} ".format(res.message))
