@@ -1,3 +1,3 @@
 import logging
 
-logging.basicConfig(level='CRITICAL')
+logging.basicConfig(level='DEBUG')

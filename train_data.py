@@ -13,8 +13,11 @@ TRAIN_DATA = [
                    (23, 34, "PURPOSE"),
                    (38, 55, "DATE"),
                    (59, 69, "LOCATION")]}),
-    ("show 8 events",
+    ("show one events",
      {"entities": [(0, 4, "ACTION"),
-                   (5, 6, "NUM_TO_SHOW")]}),
+                   (5, 8, "NUM_TO_SHOW")]}),
+    ("display two events",
+     {"entities": [(0, 7, "ACTION"),
+                   (8, 11, "NUM_TO_SHOW")]}),
 ]
 

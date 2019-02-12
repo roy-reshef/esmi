@@ -1,4 +1,4 @@
-Å´transitions⁄e[
+Å´transitions⁄’[
   {
     "clas":0,
     "move":1,
@@ -97,6 +97,30 @@
   },
   {
     "clas":16,
+    "move":1,
+    "label":"NUM_TO_SHOW",
+    "name":"B-NUM_TO_SHOW"
+  },
+  {
+    "clas":17,
+    "move":2,
+    "label":"NUM_TO_SHOW",
+    "name":"I-NUM_TO_SHOW"
+  },
+  {
+    "clas":18,
+    "move":3,
+    "label":"NUM_TO_SHOW",
+    "name":"L-NUM_TO_SHOW"
+  },
+  {
+    "clas":19,
+    "move":4,
+    "label":"NUM_TO_SHOW",
+    "name":"U-NUM_TO_SHOW"
+  },
+  {
+    "clas":20,
     "move":5,
     "label":"",
     "name":"O"

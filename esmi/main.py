@@ -12,6 +12,7 @@ logger = logging.getLogger()
 
 
 def parse_user_input(nlp, user_input: str) -> RawUserInput:
+    logger.debug("user input %s", user_input)
     doc = nlp(user_input)
 
     entities = {}
