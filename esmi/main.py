@@ -62,6 +62,7 @@ def print_welcome_message():
     print("Welcome to 'esmi' - Event Scheduling Management Interface")
     print("possible input examples:")
     print("create a meeting on 12.2.2019 9:00AM for fuseday at tikal")
+    print("show \ display one \ upcoming events")
 
 
 def main(model_loc):

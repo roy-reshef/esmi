@@ -67,7 +67,9 @@ class ShowEventIntentHandler(IntentHandler):
                 events_count = w2n.word_to_num(num_of_events)
                 calendar_client.get_next_events(events_count)
             except ValueError:
-                if num_of_events.isnumeric():
+                if num_of_events == 'upcoming':
+                    calendar_client.get_upcoming_events()
+                elif num_of_events.isnumeric():
                     calendar_client.get_next_events(num_of_events)
         return ActionResponse(ActionStatus.OK)
 
