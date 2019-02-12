@@ -56,5 +56,5 @@ https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
 create a meeting on 12.2.2019 9:00AM for fuseday at tikal
 create a meeting in 2 days for fuseday at tikal
 show 10 events
-show upcoming events
+show \ display (one) \ upcoming events
 exit
