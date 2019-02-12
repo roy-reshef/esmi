@@ -103,7 +103,7 @@ def get_workday_events(weekday):
         print(start, event['summary'])
 
 
-def create_event(starttime: datetime, location: str, purpose: str):
+def create_event(starttime: datetime, location: str, purpose: str, attendees: list):
     endtime = starttime + timedelta(hours=1)
 
     print(starttime.day)
@@ -136,6 +136,13 @@ def create_event(starttime: datetime, location: str, purpose: str):
     }
     if location:
         event['location'] = location
+
+    attendeesList = []
+    for attendee in attendees:
+        attendeeData = {}
+        attendeeData ['email'] = attendee
+        attendeesList.append(attendeeData)
+    event ['attendees'] = attendeesList
 
     event = _get_service().events().insert(calendarId='primary',
                                            body=event).execute()

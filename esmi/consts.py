@@ -13,6 +13,7 @@ class Entities(Enum):
     DATE = "DATE"
     LOCATION = "LOCATION"
     PURPOSE = "PURPOSE"
+    ATTENDEES = "ATTENDEES"
     NUM_TO_SHOW = "NUM_TO_SHOW"
 
 

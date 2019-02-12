@@ -4,5 +4,6 @@ google-auth-httplib2
 google-auth-oauthlib
 SpeechRecognition
 pyaudio
+validate_email
 word2number
 dateparser

@@ -7,6 +7,7 @@ from esmi import calendar_client, consts
 from esmi import utils
 from esmi.consts import Entities, ActionStatus
 from esmi.intents.intents import Intent
+from validate_email import validate_email
 from esmi.utils import WEEK_DAYS
 
 logger = logging.getLogger()
@@ -85,11 +86,20 @@ class CreateEventIntentHandler(IntentHandler):
         if date_str is not None:
             date = utils.parse_date(date_str)
 
+        attendeesList = []
+        if Entities.ATTENDEES in self.intent.entities:
+            tempAttendees = self.intent.entities[Entities.ATTENDEES.value]
+            if tempAttendees:
+                tempList = list(tempAttendees.split())
+                for attendee in tempList:
+                    if validate_email(attendee):
+                        attendeesList.append(attendee)
+
         try:
             calendar_client.create_event(date,
                                          self.intent.entities.get(Entities.LOCATION.value),
-                                         self.intent.entities.get(Entities.PURPOSE.value)
-                                         )
+                                         self.intent.entities.get(Entities.PURPOSE.value),
+                                         attendeesList)
             return ActionResponse(ActionStatus.OK)
         except:
             return ActionResponse(ActionStatus.ERROR)
