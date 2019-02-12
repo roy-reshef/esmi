@@ -7,6 +7,7 @@ from esmi import calendar_client, consts
 from esmi import utils
 from esmi.consts import Entities, ActionStatus
 from esmi.intents.intents import Intent
+from esmi.utils import WEEK_DAYS
 
 logger = logging.getLogger()
 
@@ -113,6 +114,8 @@ class ShowEventIntentHandler(IntentHandler):
             except ValueError:
                 if num_of_events == 'upcoming':
                     calendar_client.get_upcoming_events()
+                elif num_of_events in WEEK_DAYS.keys():
+                    calendar_client.get_workday_events(num_of_events)
                 elif num_of_events.isnumeric():
                     calendar_client.get_next_events(num_of_events)
         return ActionResponse(ActionStatus.OK)

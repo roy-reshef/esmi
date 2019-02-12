@@ -51,4 +51,13 @@ TRAIN_DATA = [
     ("get upcoming events",
      {"entities": [(0, 3, "ACTION"),
                    (4, 12, "NUM_TO_SHOW")]}),
+    ("get tuesdays events",
+     {"entities": [(0, 3, "ACTION"),
+                   (4, 13, "NUM_TO_SHOW")]}),
+    ("show tuesdays events",
+     {"entities": [(0, 4, "ACTION"),
+                   (5, 14, "NUM_TO_SHOW")]}),
+    ("display tuesdays events",
+     {"entities": [(0, 7, "ACTION"),
+                   (8, 17, "NUM_TO_SHOW")]}),
 ]

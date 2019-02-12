@@ -9,8 +9,15 @@ class Provider(object):
     def get(self, prompt: str) -> str:
         pass
 
+    @abc.abstractmethod
+    def whoami(self) -> str:
+        pass
+
 
 class Speech(Provider):
+
+    def whoami(self) -> str:
+        return 'Speech Mode'
 
     def __init__(self):
         print("running speech recognition version:", sr.__version__)
@@ -47,3 +54,6 @@ class Terminal(Provider):
 
     def get(self, prompt: str) -> str:
         return input(prompt)
+
+    def whoami(self) -> str:
+        return 'Text Mode'

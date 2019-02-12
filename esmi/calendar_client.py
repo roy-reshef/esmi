@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import datetime
+from datetime import datetime, timedelta
 import logging
 import os.path
 import pickle
@@ -12,6 +12,7 @@ from googleapiclient.discovery import build
 # read/write access scope for events
 # If modifying these scopes, delete the file token.pickle.
 from esmi import env
+from esmi.utils import next_weekday
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.events']
 
@@ -47,7 +48,7 @@ def get_next_events(num=10):
     service = _get_service()
 
     # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
     print('Getting the upcoming {} events'.format(num))
     events_result = service.events().list(calendarId='primary', timeMin=now,
                                           maxResults=num, singleEvents=True,
@@ -65,8 +66,8 @@ def get_upcoming_events():
     service = _get_service()
 
     # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    until = (datetime.datetime.utcnow() + datetime.timedelta(hours=24)).isoformat() + 'Z'
+    now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    until = (datetime.utcnow() + timedelta(hours=24)).isoformat() + 'Z'
     print('Getting the upcoming 24H events')
     events_result = service.events().list(calendarId='primary', timeMin=now,
                                           timeMax=until, singleEvents=True,
@@ -80,8 +81,30 @@ def get_upcoming_events():
         print(start, event['summary'])
 
 
+def get_workday_events(weekday):
+    service = _get_service()
+
+    # Call the Calendar API
+    now = datetime.utcnow().date()
+    start_date = next_weekday(now, weekday)
+    end_date = start_date + timedelta(days=1)
+    start = datetime.combine(start_date, datetime.min.time()).isoformat() + 'Z'
+    end = datetime.combine(end_date, datetime.min.time()).isoformat() + 'Z'
+    print('Getting events for next {}'.format(weekday[:-1]))
+    events_result = service.events().list(calendarId='primary', timeMin=start,
+                                          timeMax=end, singleEvents=True,
+                                          orderBy='startTime').execute()
+    events = events_result.get('items', [])
+
+    if not events:
+        print('No upcoming events found.')
+    for event in events:
+        start = event['start'].get('dateTime', event['start'].get('date'))
+        print(start, event['summary'])
+
+
 def create_event(starttime: datetime, location: str, purpose: str):
-    endtime = starttime + datetime.timedelta(hours=1)
+    endtime = starttime + timedelta(hours=1)
 
     print(starttime.day)
     date_format = '%Y-%m-%dT%H:%M:%S'
