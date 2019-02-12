@@ -1,4 +1,4 @@
-Å´transitions⁄’[
+Å´transitions⁄5[
   {
     "clas":0,
     "move":1,
@@ -98,29 +98,53 @@
   {
     "clas":16,
     "move":1,
+    "label":"ATTENDEES",
+    "name":"B-ATTENDEES"
+  },
+  {
+    "clas":17,
+    "move":2,
+    "label":"ATTENDEES",
+    "name":"I-ATTENDEES"
+  },
+  {
+    "clas":18,
+    "move":3,
+    "label":"ATTENDEES",
+    "name":"L-ATTENDEES"
+  },
+  {
+    "clas":19,
+    "move":4,
+    "label":"ATTENDEES",
+    "name":"U-ATTENDEES"
+  },
+  {
+    "clas":20,
+    "move":1,
     "label":"NUM_TO_SHOW",
     "name":"B-NUM_TO_SHOW"
   },
   {
-    "clas":17,
+    "clas":21,
     "move":2,
     "label":"NUM_TO_SHOW",
     "name":"I-NUM_TO_SHOW"
   },
   {
-    "clas":18,
+    "clas":22,
     "move":3,
     "label":"NUM_TO_SHOW",
     "name":"L-NUM_TO_SHOW"
   },
   {
-    "clas":19,
+    "clas":23,
     "move":4,
     "label":"NUM_TO_SHOW",
     "name":"U-NUM_TO_SHOW"
   },
   {
-    "clas":20,
+    "clas":24,
     "move":5,
     "label":"",
     "name":"O"
