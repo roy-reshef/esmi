@@ -29,7 +29,10 @@ def parse_user_input(nlp, user_input: str) -> RawUserInput:
             entities[Entities.LOCATION.value] = ent.text
         elif ent.label_ == Entities.PURPOSE.value:
             entities[Entities.PURPOSE.value] = ent.text
-        else:
+        elif ent.label_ == Entities.NUM_TO_SHOW.value:
+            entities[Entities.NUM_TO_SHOW.value] = ent.text
+
+    else:
             logger.warning(
                 "unexpected label {} for value {}".format(ent.label_, ent.text))
 
