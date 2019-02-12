@@ -14,7 +14,7 @@ def _parse_action(action: str) -> ActionType:
         return ActionType.DELETE
     elif action in {'exit', 'quit'}:
         return ActionType.EXIT
-    elif action in {'show', 'display'}:
+    elif action in {'show', 'display', 'get'}:
         return ActionType.SHOW
     else:
         return None
