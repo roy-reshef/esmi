@@ -19,6 +19,7 @@ def default_serializer(o):
 
 
 def parse_user_input(nlp, user_input: str) -> RawUserInput:
+    user_input = user_input.lower()
     logger.debug("user input %s", user_input)
     doc = nlp(user_input)
 
