@@ -46,6 +46,20 @@ class CreateEventIntentHandler(IntentHandler):
         return ActionResponse(ActionStatus.OK)
 
 
+class ShowEventIntentHandler(IntentHandler):
+    def __init__(self, intent: Intent):
+        IntentHandler.__init__(self, intent)
+
+    def execute(self) -> ActionResponse:
+        logger.info("handling events display")
+
+        # TODO: add validation
+        num_of_events = self.get_val(Entities.NUM_TO_SHOW)
+        if num_of_events and num_of_events.isnumeric():
+            calendar_client.get_next_events(num_of_events)
+        return ActionResponse(ActionStatus.OK)
+
+
 class ExitIntentHandler(IntentHandler):
     def __init__(self, intent: Intent):
         IntentHandler.__init__(self, intent)
@@ -61,8 +75,11 @@ def handle_intent(intent: Intent) -> ActionResponse:
         handler = CreateEventIntentHandler(intent)
     elif intent.action is consts.ActionType.EXIT:
         handler = ExitIntentHandler(intent)
+    elif intent.action is consts.ActionType.SHOW:
+        handler = ShowEventIntentHandler(intent)
 
     if handler is None:
+        import pdb;pdb.set_trace()
         logger.error("no intent handler was found for action:{}".format(
             intent.action.name))
         return ActionResponse(ActionStatus.ERROR,
